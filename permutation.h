@@ -186,6 +186,8 @@ const Permutation Permutation::pow(int degree) const {
 
 bool Permutation::isOdd() const {
     bool *used = new bool[size_];
+    for (unsigned int i = 0; i < size_; ++i)
+        used[i] = false;
 
     bool res = false;
 
