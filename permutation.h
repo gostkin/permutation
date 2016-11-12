@@ -107,7 +107,7 @@ public:
     unsigned int operator[](unsigned int index) const;
 
     template <typename T>
-    void operator()(T *object);
+    void operator()(T *object) const;
 
     size_t getElementsCount() const;
 
@@ -186,8 +186,6 @@ const Permutation Permutation::pow(int degree) const {
 
 bool Permutation::isOdd() const {
     bool *used = new bool[size_];
-    for (unsigned int i = 0; i < size_; ++i)
-        used[i] = false;
 
     bool res = false;
 
@@ -210,12 +208,10 @@ Permutation &Permutation::operator*=(const Permutation &right) {
     if (this == &right or size_ != right.size_)
         return *this;
     else {
-        Permutation *temp = new Permutation(*this);
+        Permutation temp(*this);
 
         for (unsigned int i = 0; i < size_; ++i)
-            data_[i] = right[temp->data_[i]];
-
-        delete temp;
+            data_[i] = right[temp.data_[i]];
     }
 
     return *this;
@@ -276,13 +272,13 @@ const Permutation Permutation::next() const {
 }
 
 Permutation &Permutation::operator++() {
-    *this = next();
+    operator=(next());
     return *this;
 }
 
 const Permutation Permutation::operator++(int) {
     Permutation temp(*this);
-    *this = next();
+    operator=(next());
 
     return temp;
 }
@@ -292,14 +288,14 @@ const Permutation Permutation::previous() const {
 }
 
 Permutation &Permutation::operator--() {
-    *this = previous();
+    operator=(previous());
 
     return *this;
 }
 
 const Permutation Permutation::operator--(int) {
     Permutation temp(*this);
-    *this = previous();
+    operator=(previous());
 
     return temp;
 }
@@ -328,7 +324,7 @@ bool Permutation::operator==(const Permutation &right) const {
 }
 
 bool Permutation::operator!=(const Permutation &right) const {
-    return !(*this == right);
+    return !(operator==(right));
 }
 
 bool Permutation::operator<(const Permutation &right) const {
@@ -349,11 +345,11 @@ bool Permutation::operator>(const Permutation &right) const {
 }
 
 bool Permutation::operator<=(const Permutation &right) const {
-    return !(*this > right);
+    return !(operator>(right));
 }
 
 bool Permutation::operator>=(const Permutation &right) const {
-    return !(*this < right);
+    return !(operator<(right));
 }
 
 unsigned int Permutation::operator[](unsigned int index) const {
@@ -361,7 +357,7 @@ unsigned int Permutation::operator[](unsigned int index) const {
 }
 
 template <typename T>
-void Permutation::operator()(T *object) {
+void Permutation::operator()(T *object) const {
     T *cobject = new T[size_];
     for (unsigned int i = 0; i < size_; ++i)
         cobject[i] = object[i];
